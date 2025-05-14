@@ -1,4 +1,3 @@
--copy code from old
 -update loop
 --print frame count
 --take frame time into account with sleep
@@ -6,3 +5,15 @@
 --update input & player move dir frequently
 --render & update game less frequently
 --
+
+
+# # # # # # # # # #
+#                 #
+#                 #
+#                 #
+#                 #
+#         o       #
+#                 #
+#                 #
+#                 #
+# # # # # # # # # #
