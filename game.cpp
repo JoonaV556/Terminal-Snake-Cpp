@@ -1,8 +1,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <thread>
-#include <conio.h>
+#include <winuser.h>
 
 using namespace std;
 
@@ -24,8 +23,7 @@ public:
     char snake = 'o';
     int playerX;
     int playerY;
-    int updates = 0;
-    MoveDirection snakeDir = up;
+    MoveDirection snakeDir = none;
 
     bool isRunning = true;
 
@@ -72,33 +70,25 @@ public:
     {
         updatePlayer();
         render();
-        updates++;
-        cout << "updated " + to_string(updates) + " times" << endl;
     }
 
     void updatePlayer()
     {
-        // update move dir
-        if (_kbhit())
-        {
-            switch (int key = _getch())
-            {
-            case 72:
-                snakeDir = MoveDirection::up;
-                break;
-            case 77:
-                snakeDir = MoveDirection::right;
-                break;
-            case 80:
-                snakeDir = MoveDirection::down;
-                break;
-            case 75:
-                snakeDir = MoveDirection::left;
-                break;
-            default:
-                break;
-            }
+        // update snake move direction based on player input
+        // if GetAsyncKeyState(VK_EXAMPLE_KEY) & 0x8000 == true - means EXAMPLE_KEY is currently pressed down
+        if (GetAsyncKeyState(VK_LEFT) & 0x8000) {
+            snakeDir = MoveDirection::left;
         }
+        if (GetAsyncKeyState(VK_RIGHT) & 0x8000) {
+            snakeDir = MoveDirection::right;
+        }
+        if (GetAsyncKeyState(VK_UP) & 0x8000) {
+            snakeDir = MoveDirection::up;
+        }
+        if (GetAsyncKeyState(VK_DOWN) & 0x8000) {
+            snakeDir = MoveDirection::down;
+        }
+
         // move player
         switch (snakeDir)
         {
@@ -120,6 +110,8 @@ public:
         default:
             break;
         }
+
+        // limit player location inside map borders
 
         bool xIn = playerX >= 0 && playerX < world[0].size();
         bool yIn = playerY >= 0 && playerY < world.size();

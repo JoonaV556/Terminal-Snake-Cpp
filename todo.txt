@@ -1,12 +1,15 @@
-- print frame count only during renders (not every update)
-
--fix input
+- fix input
 
 --update input & player move dir frequently
 
+- print frame count only during renders (not every update)
+
 --render & update game less frequently
 
---
+-score points on map
+-snake eats score points
+-snake grows
+-
 
 
 # # # # # # # # # #
