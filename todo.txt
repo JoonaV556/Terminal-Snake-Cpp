@@ -1,0 +1,8 @@
+-copy code from old
+-update loop
+--print frame count
+--take frame time into account with sleep
+-fix input
+--update input & player move dir frequently
+--render & update game less frequently
+--
