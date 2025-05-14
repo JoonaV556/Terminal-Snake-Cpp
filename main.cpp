@@ -28,6 +28,7 @@ int main(int argc, char *argv[]) {
     const float sleepTime = 1.0f / updatesPerSecond; // in seconds
     startupTime = high_resolution_clock::now();
 
+    // update game until it is over
     while (game.isRunning)
     {
         // end game if esc key is pressed down

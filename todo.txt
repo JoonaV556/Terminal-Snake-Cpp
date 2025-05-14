@@ -1,4 +1,4 @@
-- fix input
+- limit snake movement inside map borders
 
 --update input & player move dir frequently
 

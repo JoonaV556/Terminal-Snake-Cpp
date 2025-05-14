@@ -21,8 +21,8 @@ public:
     int mapHeight = 11;
     char mapBorder = '#';
     char snake = 'o';
-    int playerX;
-    int playerY;
+    int snakeX;
+    int snakeY;
     MoveDirection snakeDir = none;
 
     bool isRunning = true;
@@ -30,16 +30,11 @@ public:
     vector<vector<char>>
         world;
 
-    void init()
-    {
-
-        // initialize world with defined size
-        world = vector(
-            mapHeight + 2,               // add 2 extra for borders
-            vector<char>(mapWidth + 2)); // add 2 extra for borders
-
-        // populate world with borders and empty spaces
-        // TODO - take into account possibly different horizontal & vertical size (see !!)
+/*
+ * Builds / re-populates world with borders and empty tiles according to declared map size.
+ * Can also be used to refresh world data from previous update (clearing trails left behind by snake)
+ */
+    void refreshWorld() {
         for (int y = 0; y < world.size(); y++)
         {
             for (int x = 0; x < world[0].size(); x++)
@@ -60,19 +55,34 @@ public:
                 world[y][x] = ' ';
             }
         }
+    }
+
+    void init()
+    {
+        // initialize world with defined size
+        world = vector(
+            mapHeight + 2,               // add 2 extra for borders
+            vector<char>(mapWidth + 2)); // add 2 extra for borders
+
+        // populate world with borders and empty spaces
+        // TODO - take into account possibly different horizontal & vertical size (see !!)
+        refreshWorld();
 
         // place player at map center at start
-        playerX = (mapWidth + 2) / 2;
-        playerY = (mapHeight + 2) / 2;
+        snakeX = (mapWidth + 2) / 2;
+        snakeY = (mapHeight + 2) / 2;
     }
 
     void update()
     {
-        updatePlayer();
+        // clear world tiles from previous update
+        refreshWorld();
+        // update snake location
+        updateSnake();
         render();
     }
 
-    void updatePlayer()
+    void updateSnake()
     {
         // update snake move direction based on player input
         // if GetAsyncKeyState(VK_EXAMPLE_KEY) & 0x8000 == true - means EXAMPLE_KEY is currently pressed down
@@ -89,35 +99,40 @@ public:
             snakeDir = MoveDirection::down;
         }
 
-        // move player
+        // move snake based on its current direction
         switch (snakeDir)
         {
         case MoveDirection::none:
             /* code */
             break;
         case MoveDirection::left:
-            playerX--;
+            snakeX--;
             break;
         case MoveDirection::right:
-            playerX++;
+            snakeX++;
             break;
         case MoveDirection::up:
-            playerY--;
+            snakeY--;
             break;
         case MoveDirection::down:
-            playerY++;
+            snakeY++;
             break;
         default:
             break;
         }
 
-        // limit player location inside map borders
+        // limit snake location inside map borders
+        if (snakeX <= 0) {snakeX = 1;}
+        if (snakeX >= (mapWidth+2) - 1) {snakeX = mapWidth;}
+        if (snakeY <= 0) {snakeY = 1;}
+        if (snakeY >= mapHeight - 1) {snakeY = mapHeight - 2;}
 
-        bool xIn = playerX >= 0 && playerX < world[0].size();
-        bool yIn = playerY >= 0 && playerY < world.size();
+        // place snake on associated map tile
+        bool xIn = snakeX >= 0 && snakeX < world[0].size();
+        bool yIn = snakeY >= 0 && snakeY < world.size();
         if (xIn && yIn)
         {
-            world[playerY][playerX] = snake;
+            world[snakeY][snakeX] = snake;
         }
     }
 
