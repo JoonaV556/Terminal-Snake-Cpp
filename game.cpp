@@ -39,10 +39,10 @@ public:
         {
             for (int x = 0; x < world[0].size(); x++)
             {
-                bool isTopBorder = (y == 0);
-                bool isLowerBorder = (y == world.size() - 1);
-                bool isLeftBorder = (x == 0);
-                bool isRightBorder = (x == world[y].size() - 1);
+                bool isTopBorder    =   (y == 0);
+                bool isLowerBorder  =   (y == world.size() - 1);
+                bool isLeftBorder   =   (x == 0);
+                bool isRightBorder  =   (x == world[y].size() - 1);
 
                 // populate borders
                 if (isTopBorder || isLowerBorder || isLeftBorder || isRightBorder)
@@ -123,9 +123,9 @@ public:
 
         // limit snake location inside map borders
         if (snakeX <= 0) {snakeX = 1;}
-        if (snakeX >= (mapWidth+2) - 1) {snakeX = mapWidth;}
+        if (snakeX > mapWidth) {snakeX = mapWidth;}
         if (snakeY <= 0) {snakeY = 1;}
-        if (snakeY >= mapHeight - 1) {snakeY = mapHeight - 2;}
+        if (snakeY > mapHeight) {snakeY = mapHeight;}
 
         // place snake on associated map tile
         bool xIn = snakeX >= 0 && snakeX < world[0].size();

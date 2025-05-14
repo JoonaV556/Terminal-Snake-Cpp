@@ -1,7 +1,3 @@
-- add readme
-
-- limit snake movement inside map borders
-
 --update input & player move dir frequently
 
 - print frame count only during renders (not every update)
@@ -15,6 +11,8 @@ features
 -score
 -game over
 
+nice to have
+-symmetrical map grid
 
 # # # # # # # # # #
 #                 #
