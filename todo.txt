@@ -1,9 +1,11 @@
--update loop
---print frame count
---take frame time into account with sleep
+- print frame count only during renders (not every update)
+
 -fix input
+
 --update input & player move dir frequently
+
 --render & update game less frequently
+
 --
 
 

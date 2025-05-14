@@ -2,7 +2,6 @@
 #include <string>
 #include <vector>
 #include <thread>
-#include <chrono>
 #include <conio.h>
 
 using namespace std;
@@ -15,7 +14,7 @@ enum MoveDirection
     up,
     down
 };
-class Snake
+class Game
 {
 
 public:
@@ -26,7 +25,7 @@ public:
     int playerX;
     int playerY;
     int updates = 0;
-    MoveDirection snakeDir = MoveDirection::up;
+    MoveDirection snakeDir = up;
 
     bool isRunning = true;
 
@@ -37,7 +36,7 @@ public:
     {
 
         // initialize world with defined size
-        world = vector<vector<char>>(
+        world = vector(
             mapHeight + 2,               // add 2 extra for borders
             vector<char>(mapWidth + 2)); // add 2 extra for borders
 
@@ -71,7 +70,6 @@ public:
 
     void update()
     {
-        system("cls");
         updatePlayer();
         render();
         updates++;

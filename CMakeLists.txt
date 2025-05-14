@@ -3,4 +3,4 @@ project(clionSnake)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(clionSnake snake.cpp)
+add_executable(clionSnake main.cpp)
