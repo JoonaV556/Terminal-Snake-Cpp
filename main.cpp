@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
     startupTime = high_resolution_clock::now();
 
     // update game until it is over
-    while (game.isRunning)
+    while (game.isGameRunning)
     {
         // end game if esc key is pressed down
         if (GetAsyncKeyState(VK_ESCAPE) & 0x8000) {
@@ -37,24 +37,21 @@ int main(int argc, char *argv[]) {
         }
 
         auto start = std::chrono::high_resolution_clock::now();
-        // clear screen
-        system("cls");
-
         // update game
-        game.update();
+        game.update(elapsedTimeSeconds);
         auto end = high_resolution_clock::now();
         duration<double> elapsed = end - start;
         lastUpdateTime = elapsed.count();
         updates++;
 
         // print general info below game grid
-        std::cout << "update duration was: " + std::to_string(lastUpdateTime) + " seconds" << "\n";
-        std::cout << "updated " + std::to_string(updates) + " times" << "\n";
+        // std::cout << "update duration was: " + std::to_string(lastUpdateTime) + " seconds" << "\n";
+        // std::cout << "updated " + std::to_string(updates) + " times" << "\n";
 
         // update elapsed time
         duration<double> totalDuration = high_resolution_clock::now() - startupTime;
         elapsedTimeSeconds = totalDuration.count();
-        std::cout << "total runtime in seconds: " + std::to_string(elapsedTimeSeconds) << "\n";
+        // std::cout << "total runtime in seconds: " + std::to_string(elapsedTimeSeconds) << "\n";
 
         // wait before executing next update
         float actualWaitTime = sleepTime - lastUpdateTime;

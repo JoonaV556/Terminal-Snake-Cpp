@@ -17,15 +17,23 @@ class Game
 {
 
 public:
+    // map properties
     int mapWidth = 11;
     int mapHeight = 11;
-    char mapBorder = '#';
-    char snake = 'o';
+    char mapBorderVisual = '#';
+
+    // snake properties
     int snakeX;
     int snakeY;
+    char snakeVisual = 'o';
     MoveDirection snakeDir = none;
 
-    bool isRunning = true;
+    // how fast the game runs / how many updates per second
+    float gameSpeed = 1;
+    float lastUpdateTime = 0;
+    float elapsedGameTime = 0;
+
+    bool isGameRunning = true;
 
     vector<vector<char>>
         world;
@@ -47,7 +55,7 @@ public:
                 // populate borders
                 if (isTopBorder || isLowerBorder || isLeftBorder || isRightBorder)
                 {
-                    world[y][x] = mapBorder;
+                    world[y][x] = mapBorderVisual;
                     continue;
                 }
 
@@ -73,18 +81,27 @@ public:
         snakeY = (mapHeight + 2) / 2;
     }
 
-    void update()
+    void update(float elapsedTime)
     {
-        // clear world tiles from previous update
-        refreshWorld();
-        // update snake location
-        updateSnake();
-        render();
+        // update snake move-direction based on player input
+        updateMoveDirection();
+
+        elapsedGameTime = elapsedTime;
+        if (elapsedGameTime - lastUpdateTime > gameSpeed) {
+            // clear screen
+            system("cls");
+            // clear world tiles from previous update
+            refreshWorld();
+            // update snake location
+            updateSnake();
+            render();
+            lastUpdateTime = elapsedGameTime;
+        }
     }
 
-    void updateSnake()
-    {
-        // update snake move direction based on player input
+    // updates snake move direction based on user input
+    void updateMoveDirection() {
+
         // if GetAsyncKeyState(VK_EXAMPLE_KEY) & 0x8000 == true - means EXAMPLE_KEY is currently pressed down
         if (GetAsyncKeyState(VK_LEFT) & 0x8000) {
             snakeDir = MoveDirection::left;
@@ -98,7 +115,10 @@ public:
         if (GetAsyncKeyState(VK_DOWN) & 0x8000) {
             snakeDir = MoveDirection::down;
         }
+    }
 
+    void updateSnake()
+    {
         // move snake based on its current direction
         switch (snakeDir)
         {
@@ -132,7 +152,7 @@ public:
         bool yIn = snakeY >= 0 && snakeY < world.size();
         if (xIn && yIn)
         {
-            world[snakeY][snakeX] = snake;
+            world[snakeY][snakeX] = snakeVisual;
         }
     }
 

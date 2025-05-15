@@ -1,8 +1,4 @@
---update input & player move dir frequently
-
 - print frame count only during renders (not every update)
-
---render & update game less frequently
 
 features
 -score points on map
@@ -12,6 +8,7 @@ features
 -game over
 
 nice to have
+- prevent snake from turning 180 degrees
 -symmetrical map grid
 
 # # # # # # # # # #
