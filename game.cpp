@@ -18,8 +18,8 @@ class Game
 
 public:
     // map properties
-    int mapWidth = 11;
-    int mapHeight = 11;
+    int mapWidth = 12;
+    int mapHeight = 12;
     char mapBorderVisual = '#';
 
     // snake properties
@@ -162,11 +162,29 @@ public:
         // render world data
         for (int y = 0; y < world.size(); y++)
         {
-            // assemble world row into a string
+            // assemble world row into a printable string
             string rowStr;
             rowStr.assign(world[y].begin(), world[y].end());
+
+            // add gaps between tiles
+            string withGaps(rowStr.size()*2-1, '_'); // create new empty string with correct size
+            bool add = false;
+            int oIndex = 0;
+            // populate new string with gaps in between
+            for (int g = 0; g < withGaps.size() ; g++) {
+                if (!add) {
+                    add = true;
+                    withGaps[g] = rowStr[oIndex];
+                    oIndex++;
+                    continue;
+                }
+                add = false;
+                if (g == withGaps.size() - 1) { break;}
+                withGaps[g] = ' ';
+            }
+
             // print row
-            cout << rowStr << endl;
+            cout << withGaps << endl;
         }
     }
 };
