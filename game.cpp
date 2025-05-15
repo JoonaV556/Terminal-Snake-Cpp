@@ -1,6 +1,8 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <tuple>
+#include <cstdlib>
 #include <winuser.h>
 
 using namespace std;
@@ -28,6 +30,9 @@ public:
     int snakeY;
     char snakeVisual = 'o';
     MoveDirection snakeDir = none;
+
+    tuple<int, int> scorePosition = make_tuple(0, 0);
+    char scoreVisual = '*';
 
     // how fast the game runs / how many updates per second
     float gameUpdatesPerSecond = 3;
@@ -74,12 +79,27 @@ public:
             vector<char>(mapWidth + 2)); // add 2 extra for borders
 
         // populate world with borders and empty spaces
-        // TODO - take into account possibly different horizontal & vertical size (see !!)
         refreshWorld();
 
         // place player at map center at start
         snakeX = (mapWidth + 2) / 2;
         snakeY = (mapHeight + 2) / 2;
+        world[snakeY][snakeX] = snakeVisual;
+
+        // todo - place score somewhere
+        // get free tiles ()
+        vector<tuple<int, int>> freeTiles; // x, y
+        for (int y = 1; y <= mapHeight; y++) {
+            for (int x = 1; x <= mapWidth; x++) {
+                if (y != snakeY && x != snakeX) {
+                    freeTiles.push_back(make_tuple(x, y));
+                }
+            }
+        }
+        // pick random from free tiles and place score there
+        int randomTile = rand() % freeTiles.size();
+        get<0>(scorePosition) = get<0>(freeTiles[randomTile]);
+        get<1>(scorePosition) = get<1>(freeTiles[randomTile]);
 
         // ask player for optional horizontal padding
         cout << "NOTE: " << endl;
@@ -104,6 +124,10 @@ public:
             system("cls");
             // clear world tiles from previous update
             refreshWorld();
+
+            // place score
+            world[get<1>(scorePosition)][get<0>(scorePosition)] = scoreVisual;
+
             // update snake location
             updateSnake();
             render();
