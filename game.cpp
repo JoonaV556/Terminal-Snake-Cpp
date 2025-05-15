@@ -20,6 +20,7 @@ public:
     // map properties
     int mapWidth = 12;
     int mapHeight = 12;
+    bool enableHorizontalPadding = false;
     char mapBorderVisual = '#';
 
     // snake properties
@@ -79,6 +80,16 @@ public:
         // place player at map center at start
         snakeX = (mapWidth + 2) / 2;
         snakeY = (mapHeight + 2) / 2;
+
+        // ask player for optional horizontal padding
+        cout << "NOTE: " << endl;
+        cout << "The game level might look asymmetrical depending on terminal styling. You can combat the issue by adding horizontal padding." << endl;
+        cout << "Type '1' to enable padding or '0' to disable:" << endl;
+        string choice;
+        cin >> choice;
+        if (choice == "1") {
+            enableHorizontalPadding = true;
+        }
     }
 
     void update(float elapsedTime)
@@ -167,6 +178,7 @@ public:
             rowStr.assign(world[y].begin(), world[y].end());
 
             // add gaps between tiles
+            // todo - \/ \/ fix horrible mess \/ \/
             string withGaps(rowStr.size()*2-1, '_'); // create new empty string with correct size
             bool add = false;
             int oIndex = 0;
@@ -184,7 +196,11 @@ public:
             }
 
             // print row
-            cout << withGaps << endl;
+            if (enableHorizontalPadding) {
+                cout << withGaps << endl;
+            } else {
+                cout << rowStr << endl;
+            }
         }
     }
 };

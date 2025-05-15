@@ -1,5 +1,4 @@
 - optional feature - symmetrical map grid (ask user for additional padding during startup)
---single gap
 --ask for gap count at start
 
 - print frame count only during renders (not every update)
