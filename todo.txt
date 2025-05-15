@@ -1,8 +1,8 @@
---points after initial
----spawn new point
-
-features
 -snake eats score points
+-points after initial
+--spawn new point
+
+features - waiting
 -snake grows
 -score
 -game over

@@ -31,8 +31,10 @@ public:
     char snakeVisual = 'o';
     MoveDirection snakeDir = none;
 
+    // score properties
     tuple<int, int> scorePosition = make_tuple(0, 0);
     char scoreVisual = '*';
+    int score = 0;
 
     // how fast the game runs / how many updates per second
     float gameUpdatesPerSecond = 3;
@@ -221,10 +223,12 @@ public:
 
             // print row
             if (enableHorizontalPadding) {
-                cout << withGaps << endl;
+                cout << withGaps << "\n";
             } else {
-                cout << rowStr << endl;
+                cout << rowStr << "\n";
             }
         }
+        // render score
+        cout << "Score: " << score << endl;
     }
 };
