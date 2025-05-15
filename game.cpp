@@ -73,6 +73,22 @@ public:
         }
     }
 
+    void placeScoreInRandomEmptyPosition() {
+        // get free tiles ()
+        vector<tuple<int, int>> freeTiles; // x, y
+        for (int y = 1; y <= mapHeight; y++) {
+            for (int x = 1; x <= mapWidth; x++) {
+                if (y != snakeY && x != snakeX) {
+                    freeTiles.push_back(make_tuple(x, y));
+                }
+            }
+        }
+        // pick random from free tiles and place score there
+        int randomTile = rand() % freeTiles.size();
+        get<0>(scorePosition) = get<0>(freeTiles[randomTile]);
+        get<1>(scorePosition) = get<1>(freeTiles[randomTile]);
+    }
+
     void init()
     {
         // initialize world with defined size
@@ -88,20 +104,8 @@ public:
         snakeY = (mapHeight + 2) / 2;
         world[snakeY][snakeX] = snakeVisual;
 
-        // todo - place score somewhere
-        // get free tiles ()
-        vector<tuple<int, int>> freeTiles; // x, y
-        for (int y = 1; y <= mapHeight; y++) {
-            for (int x = 1; x <= mapWidth; x++) {
-                if (y != snakeY && x != snakeX) {
-                    freeTiles.push_back(make_tuple(x, y));
-                }
-            }
-        }
-        // pick random from free tiles and place score there
-        int randomTile = rand() % freeTiles.size();
-        get<0>(scorePosition) = get<0>(freeTiles[randomTile]);
-        get<1>(scorePosition) = get<1>(freeTiles[randomTile]);
+        // place score point
+        placeScoreInRandomEmptyPosition();
 
         // ask player for optional horizontal padding
         cout << "NOTE: " << endl;
@@ -132,6 +136,16 @@ public:
 
             // update snake location
             updateSnake();
+
+            // consume score point if snake hits one
+            if (snakeX == get<0>(scorePosition) && snakeY == get<1>(scorePosition)) {
+                score++;
+                // spawn new score point / place score in another tile
+                placeScoreInRandomEmptyPosition();
+
+                // todo - grow snake
+            }
+
             render();
             lastUpdateTime = elapsedGameTime;
         }
