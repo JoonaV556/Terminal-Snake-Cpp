@@ -29,7 +29,7 @@ public:
     MoveDirection snakeDir = none;
 
     // how fast the game runs / how many updates per second
-    float gameSpeed = 1;
+    float gameUpdatesPerSecond = 3;
     float lastUpdateTime = 0;
     float elapsedGameTime = 0;
 
@@ -87,7 +87,8 @@ public:
         updateMoveDirection();
 
         elapsedGameTime = elapsedTime;
-        if (elapsedGameTime - lastUpdateTime > gameSpeed) {
+        float secondsBetweenUpdates = 1 / gameUpdatesPerSecond;
+        if (elapsedGameTime - lastUpdateTime > secondsBetweenUpdates) {
             // clear screen
             system("cls");
             // clear world tiles from previous update
