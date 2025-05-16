@@ -1,6 +1,17 @@
+-refactor snake pos into list of positions (head always first)
+
+-snake grows
+--track last tile
+--bool grow pending
+--if pending -> place tail in last tile
+
+-tail follows head
+
+
+
+
 
 features - waiting
--snake grows
 -score
 -game over
 

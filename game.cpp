@@ -26,10 +26,12 @@ public:
     char mapBorderVisual = '#';
 
     // snake properties
-    int snakeX;
-    int snakeY;
     char snakeVisual = 'o';
     MoveDirection snakeDir = none;
+    vector<tuple<int, int>> snake =
+        {
+        make_tuple(0, 0), // init head
+        };
 
     // score properties
     tuple<int, int> scorePosition = make_tuple(0, 0);
@@ -37,7 +39,7 @@ public:
     int score = 0;
 
     // how fast the game runs / how many updates per second
-    float gameUpdatesPerSecond = 3;
+    float gameUpdatesPerSecond = 2;
     float lastUpdateTime = 0;
     float elapsedGameTime = 0;
 
@@ -78,8 +80,15 @@ public:
         vector<tuple<int, int>> freeTiles; // x, y
         for (int y = 1; y <= mapHeight; y++) {
             for (int x = 1; x <= mapWidth; x++) {
-                if (y != snakeY && x != snakeX) {
-                    freeTiles.push_back(make_tuple(x, y));
+                bool isFree = true;
+                for (tuple<int, int> member : snake) {
+                    if (y != get<1>(member) && x != get<0>(member)) {
+                        isFree = false;
+                        break;
+                }
+                    if (isFree) {
+                        freeTiles.push_back(make_tuple(x, y));
+                    }
                 }
             }
         }
@@ -100,9 +109,7 @@ public:
         refreshWorld();
 
         // place player at map center at start
-        snakeX = (mapWidth + 2) / 2;
-        snakeY = (mapHeight + 2) / 2;
-        world[snakeY][snakeX] = snakeVisual;
+        placeSnakeMember(0, (mapWidth + 2) / 2, (mapHeight + 2) / 2);
 
         // place score point
         placeScoreInRandomEmptyPosition();
@@ -116,6 +123,19 @@ public:
         if (choice == "1") {
             enableHorizontalPadding = true;
         }
+    }
+
+    // Assigns given position to snake member and places it in the world in same coords
+    // memberIndex 0 = snake head
+    void placeSnakeMember(int memberIndex, int x, int y)
+    {
+        get<0>(snake[memberIndex]) = x;
+        get<1>(snake[memberIndex]) = y;
+        world[y][x] = snakeVisual;
+    }
+
+    tuple<int, int> getSnakePos(int memberIndex) {
+        return snake[memberIndex];
     }
 
     void update(float elapsedTime)
@@ -138,6 +158,8 @@ public:
             updateSnake();
 
             // consume score point if snake hits one
+            int snakeX = get<0>(snake[0]);
+            int snakeY = get<1>(snake[0]);
             if (snakeX == get<0>(scorePosition) && snakeY == get<1>(scorePosition)) {
                 score++;
                 // spawn new score point / place score in another tile
@@ -178,20 +200,24 @@ public:
             /* code */
             break;
         case MoveDirection::left:
-            snakeX--;
+                placeSnakeMember(0, get<0>(snake[0])-1, get<1>(snake[0])  );
             break;
         case MoveDirection::right:
-            snakeX++;
+                placeSnakeMember(0, get<0>(snake[0])+1, get<1>(snake[0])  );
             break;
         case MoveDirection::up:
-            snakeY--;
+                placeSnakeMember(0, get<0>(snake[0]), get<1>(snake[0])-1  );
             break;
         case MoveDirection::down:
-            snakeY++;
+                placeSnakeMember(0, get<0>(snake[0]), get<1>(snake[0])+1  );
             break;
         default:
             break;
         }
+
+        // get snake head position
+        int snakeX = get<0>(snake[0]);
+        int snakeY = get<1>(snake[0]);
 
         // limit snake location inside map borders
         if (snakeX <= 0) {snakeX = 1;}
