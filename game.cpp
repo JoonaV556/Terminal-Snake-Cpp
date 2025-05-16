@@ -109,7 +109,7 @@ public:
         refreshWorld();
 
         // place player at map center at start
-        placeSnakeMember(0, (mapWidth + 2) / 2, (mapHeight + 2) / 2);
+        setSnakeMemberPosition(0, (mapWidth + 2) / 2, (mapHeight + 2) / 2);
 
         // place score point
         placeScoreInRandomEmptyPosition();
@@ -125,13 +125,19 @@ public:
         }
     }
 
-    // Assigns given position to snake member and places it in the world in same coords
+    // Assigns given position to snake member - does not place it in the world tile
     // memberIndex 0 = snake head
-    void placeSnakeMember(int memberIndex, int x, int y)
+    void setSnakeMemberPosition(int memberIndex, int x, int y)
     {
         get<0>(snake[memberIndex]) = x;
         get<1>(snake[memberIndex]) = y;
-        world[y][x] = snakeVisual;
+    }
+
+    // places snake members in world on their given coords
+    void placeSnakeInWorld() {
+        for (int i = 0; i < snake.size(); i++) {
+            world[get<1>(snake[i])][get<0>(snake[i])] = snakeVisual;
+        }
     }
 
     tuple<int, int> getSnakePos(int memberIndex) {
@@ -200,16 +206,16 @@ public:
             /* code */
             break;
         case MoveDirection::left:
-                placeSnakeMember(0, get<0>(snake[0])-1, get<1>(snake[0])  );
+                setSnakeMemberPosition(0, get<0>(snake[0])-1, get<1>(snake[0])  );
             break;
         case MoveDirection::right:
-                placeSnakeMember(0, get<0>(snake[0])+1, get<1>(snake[0])  );
+                setSnakeMemberPosition(0, get<0>(snake[0])+1, get<1>(snake[0])  );
             break;
         case MoveDirection::up:
-                placeSnakeMember(0, get<0>(snake[0]), get<1>(snake[0])-1  );
+                setSnakeMemberPosition(0, get<0>(snake[0]), get<1>(snake[0])-1  );
             break;
         case MoveDirection::down:
-                placeSnakeMember(0, get<0>(snake[0]), get<1>(snake[0])+1  );
+                setSnakeMemberPosition(0, get<0>(snake[0]), get<1>(snake[0])+1  );
             break;
         default:
             break;
@@ -220,18 +226,21 @@ public:
         int snakeY = get<1>(snake[0]);
 
         // limit snake location inside map borders
-        if (snakeX <= 0) {snakeX = 1;}
-        if (snakeX > mapWidth) {snakeX = mapWidth;}
-        if (snakeY <= 0) {snakeY = 1;}
-        if (snakeY > mapHeight) {snakeY = mapHeight;}
-
-        // place snake on associated map tile
-        bool xIn = snakeX >= 0 && snakeX < world[0].size();
-        bool yIn = snakeY >= 0 && snakeY < world.size();
-        if (xIn && yIn)
-        {
-            world[snakeY][snakeX] = snakeVisual;
+        if (snakeX <= 0) {
+            setSnakeMemberPosition(0, 1, snakeY);
         }
+        if (snakeX > mapWidth) {
+            setSnakeMemberPosition(0, mapWidth, snakeY);
+        }
+        if (snakeY <= 0) {
+            setSnakeMemberPosition(0, snakeX, 1);
+        }
+        if (snakeY > mapHeight) {
+            setSnakeMemberPosition(0, snakeX, mapHeight);
+        }
+
+        // place snake members in world
+        placeSnakeInWorld();
     }
 
     void render()
