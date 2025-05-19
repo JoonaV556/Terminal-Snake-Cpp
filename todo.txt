@@ -14,13 +14,11 @@ move snake
 
 
 
-features - waiting
--score
--game over
+features
+-game over - wait for user input and start all over again
 
 nice to have
 - prevent snake from turning 180 degrees
-- tuples for snake & score point coordinates?
 
 # # # # # # # # # #
 #                 #

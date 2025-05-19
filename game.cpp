@@ -7,17 +7,15 @@
 
 using namespace std;
 
-enum MoveDirection
-{
+enum MoveDirection {
     none,
     left,
     right,
     up,
     down
 };
-class Game
-{
 
+class Game {
 public:
     // map properties
     int mapWidth = 12;
@@ -28,10 +26,10 @@ public:
     // snake properties
     char snakeVisual = 'o';
     MoveDirection snakeDir = none;
-    vector<tuple<int, int>> snake =
-        {
+    vector<tuple<int, int> > snake =
+    {
         make_tuple(0, 0), // init head
-        };
+    };
     tuple<int, int> tailLastPosition = make_tuple(0, 0);
     bool growPending = false;
 
@@ -47,26 +45,23 @@ public:
 
     bool isGameRunning = true;
 
-    vector<vector<char>>
-        world;
+    vector<vector<char> >
+    world;
 
-/*
- * Builds / re-populates world with borders and empty tiles according to declared map size.
- * Can also be used to refresh world data from previous update (clearing trails left behind by snake)
- */
+    /*
+     * Builds / re-populates world with borders and empty tiles according to declared map size.
+     * Can also be used to refresh world data from previous update (clearing trails left behind by snake)
+     */
     void refreshWorld() {
-        for (int y = 0; y < world.size(); y++)
-        {
-            for (int x = 0; x < world[0].size(); x++)
-            {
-                bool isTopBorder    =   (y == 0);
-                bool isLowerBorder  =   (y == world.size() - 1);
-                bool isLeftBorder   =   (x == 0);
-                bool isRightBorder  =   (x == world[y].size() - 1);
+        for (int y = 0; y < world.size(); y++) {
+            for (int x = 0; x < world[0].size(); x++) {
+                bool isTopBorder = (y == 0);
+                bool isLowerBorder = (y == world.size() - 1);
+                bool isLeftBorder = (x == 0);
+                bool isRightBorder = (x == world[y].size() - 1);
 
                 // populate borders
-                if (isTopBorder || isLowerBorder || isLeftBorder || isRightBorder)
-                {
+                if (isTopBorder || isLowerBorder || isLeftBorder || isRightBorder) {
                     world[y][x] = mapBorderVisual;
                     continue;
                 }
@@ -79,18 +74,14 @@ public:
 
     void placeScoreInRandomEmptyPosition() {
         // get free tiles ()
-        vector<tuple<int, int>> freeTiles; // x, y
+        vector<tuple<int, int> > freeTiles; // x, y
         for (int y = 1; y <= mapHeight; y++) {
             for (int x = 1; x <= mapWidth; x++) {
-                bool isFree = true;
-                for (tuple<int, int> member : snake) {
+                for (tuple<int, int> member: snake) {
                     if (y != get<1>(member) && x != get<0>(member)) {
-                        isFree = false;
                         break;
-                }
-                    if (isFree) {
-                        freeTiles.push_back(make_tuple(x, y));
                     }
+                    freeTiles.push_back(make_tuple(x, y));
                 }
             }
         }
@@ -100,11 +91,10 @@ public:
         get<1>(scorePosition) = get<1>(freeTiles[randomTile]);
     }
 
-    void init()
-    {
+    void init() {
         // initialize world with defined size
         world = vector(
-            mapHeight + 2,               // add 2 extra for borders
+            mapHeight + 2, // add 2 extra for borders
             vector<char>(mapWidth + 2)); // add 2 extra for borders
 
         // populate world with borders and empty spaces
@@ -112,13 +102,16 @@ public:
 
         // place player at map center at start
         setSnakeMemberPosition(0, (mapWidth + 2) / 2, (mapHeight + 2) / 2);
+        placeSnakeInWorld();
 
         // place score point
         placeScoreInRandomEmptyPosition();
 
         // ask player for optional horizontal padding
         cout << "NOTE: " << endl;
-        cout << "The game level might look asymmetrical depending on terminal styling. You can combat the issue by adding horizontal padding." << endl;
+        cout <<
+                "The game level might look asymmetrical depending on terminal styling. You can combat the issue by adding horizontal padding."
+                << endl;
         cout << "Type '1' to enable padding or '0' to disable:" << endl;
         string choice;
         cin >> choice;
@@ -129,8 +122,7 @@ public:
 
     // Assigns given position to snake member - does not place it in the world tile
     // memberIndex 0 = snake head
-    void setSnakeMemberPosition(int memberIndex, int x, int y)
-    {
+    void setSnakeMemberPosition(int memberIndex, int x, int y) {
         get<0>(snake[memberIndex]) = x;
         get<1>(snake[memberIndex]) = y;
     }
@@ -142,12 +134,16 @@ public:
         }
     }
 
+    void restartGame() {
+        score = 0;
+        init();
+    }
+
     tuple<int, int> getSnakePos(int memberIndex) {
         return snake[memberIndex];
     }
 
-    void update(float elapsedTime)
-    {
+    void update(float elapsedTime) {
         // update snake move-direction based on player input
         updateMoveDirection();
 
@@ -165,17 +161,6 @@ public:
             // update snake location
             updateSnake();
 
-            // consume score point if snake hits one
-            int snakeX = get<0>(snake[0]);
-            int snakeY = get<1>(snake[0]);
-            if (snakeX == get<0>(scorePosition) && snakeY == get<1>(scorePosition)) {
-                score++;
-                // spawn new score point / place score in another tile
-                placeScoreInRandomEmptyPosition();
-                // grow next update
-                growPending = true;
-            }
-
             render();
             lastUpdateTime = elapsedGameTime;
         }
@@ -183,7 +168,6 @@ public:
 
     // updates snake move direction based on user input
     void updateMoveDirection() {
-
         // if GetAsyncKeyState(VK_EXAMPLE_KEY) & 0x8000 == true - means EXAMPLE_KEY is currently pressed down
         if (GetAsyncKeyState(VK_LEFT) & 0x8000) {
             snakeDir = MoveDirection::left;
@@ -199,58 +183,75 @@ public:
         }
     }
 
-    void updateSnake()
-    {
-        // move snake based on its current direction
-        switch (snakeDir)
-        {
-        case MoveDirection::none:
-            /* code */
-            break;
-        case MoveDirection::left:
-                setSnakeMemberPosition(0, get<0>(snake[0])-1, get<1>(snake[0])  );
-            break;
-        case MoveDirection::right:
-                setSnakeMemberPosition(0, get<0>(snake[0])+1, get<1>(snake[0])  );
-            break;
-        case MoveDirection::up:
-                setSnakeMemberPosition(0, get<0>(snake[0]), get<1>(snake[0])-1  );
-            break;
-        case MoveDirection::down:
-                setSnakeMemberPosition(0, get<0>(snake[0]), get<1>(snake[0])+1  );
-            break;
-        default:
-            break;
+    void consumeScore() {
+        score++;
+        // spawn new score point / place score in another tile
+        placeScoreInRandomEmptyPosition();
+        // grow next update
+        growPending = true;
+    }
+
+    void updateSnake() {
+        int xChange = 0;
+        int yChange = 0;
+        switch (snakeDir) {
+            case MoveDirection::none:
+                /* code */
+                break;
+            case MoveDirection::left:
+                xChange = -1;
+                break;
+            case MoveDirection::right:
+                xChange = 1;
+                break;
+            case MoveDirection::up:
+                yChange = -1;
+                break;
+            case MoveDirection::down:
+                yChange = 1;
+                break;
+            default:
+                break;
         }
 
-        // get snake head position
-        int snakeX = get<0>(snake[0]);
-        int snakeY = get<1>(snake[0]);
+        // check next position
+        int nextX = get<0>(snake[0]) + xChange;
+        int nextY = get<1>(snake[0]) + yChange;
+        char nextTile = world[nextY][nextX];
+        // hit wall or snake
+        if (nextTile == mapBorderVisual || nextTile == snakeVisual) {
+            restartGame();
+            return;
+        }
+        // hit score
+        if (nextTile == scoreVisual) {
+            consumeScore();
+        }
+
+        // move snake
+        int lastX = nextX;
+        int lastY = nextY;
+        for (int i = 0; i < snake.size(); i++) {
+            if (i == 0) {
+                // first member
+                lastX = get<0>(snake[i]);
+                lastY = get<1>(snake[i]);
+                setSnakeMemberPosition(i, nextX, nextY);
+                continue;
+            }
+            nextX = lastX;
+            nextY = lastY;
+            lastX = get<0>(snake[i]);
+            lastY = get<1>(snake[i]);
+            // other members
+            setSnakeMemberPosition(i, nextX, nextY);
+        }
+
         // store tail position for growing purposes
         get<0>(tailLastPosition) = get<0>(snake.back());
         get<1>(tailLastPosition) = get<1>(snake.back());
 
-        // limit snake location inside map borders
-        if (snakeX <= 0) {
-            setSnakeMemberPosition(0, 1, snakeY);
-        }
-        if (snakeX > mapWidth) {
-            setSnakeMemberPosition(0, mapWidth, snakeY);
-        }
-        if (snakeY <= 0) {
-            setSnakeMemberPosition(0, snakeX, 1);
-        }
-        if (snakeY > mapHeight) {
-            setSnakeMemberPosition(0, snakeX, mapHeight);
-        }
-
-        // grow snake if grow is pending
-        if (growPending) {
-            growSnake();
-            growPending = false;
-        }
-
-        // place snake members in world
+        // place snake parts in world grid
         placeSnakeInWorld();
     }
 
@@ -261,22 +262,20 @@ public:
         snake.push_back(newMember);
     }
 
-    void render()
-    {
+    void render() {
         // render world data
-        for (int y = 0; y < world.size(); y++)
-        {
+        for (int y = 0; y < world.size(); y++) {
             // assemble world row into a printable string
             string rowStr;
             rowStr.assign(world[y].begin(), world[y].end());
 
             // add gaps between tiles
             // todo - \/ \/ fix horrible mess \/ \/
-            string withGaps(rowStr.size()*2-1, '_'); // create new empty string with correct size
+            string withGaps(rowStr.size() * 2 - 1, '_'); // create new empty string with correct size
             bool add = false;
             int oIndex = 0;
             // populate new string with gaps in between
-            for (int g = 0; g < withGaps.size() ; g++) {
+            for (int g = 0; g < withGaps.size(); g++) {
                 if (!add) {
                     add = true;
                     withGaps[g] = rowStr[oIndex];
@@ -284,7 +283,7 @@ public:
                     continue;
                 }
                 add = false;
-                if (g == withGaps.size() - 1) { break;}
+                if (g == withGaps.size() - 1) { break; }
                 withGaps[g] = ' ';
             }
 
@@ -297,5 +296,7 @@ public:
         }
         // render score
         cout << "Score: " << score << endl;
+        // ESC to quit message
+        cout << "Press ESC to quit" << endl;
     }
 };

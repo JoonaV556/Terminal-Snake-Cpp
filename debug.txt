@@ -1,0 +1,2 @@
+- test if snake coords change
+- test if snake coords in world change
