@@ -32,6 +32,8 @@ public:
         {
         make_tuple(0, 0), // init head
         };
+    tuple<int, int> tailLastPosition = make_tuple(0, 0);
+    bool growPending = false;
 
     // score properties
     tuple<int, int> scorePosition = make_tuple(0, 0);
@@ -170,8 +172,8 @@ public:
                 score++;
                 // spawn new score point / place score in another tile
                 placeScoreInRandomEmptyPosition();
-
-                // todo - grow snake
+                // grow next update
+                growPending = true;
             }
 
             render();
@@ -224,6 +226,9 @@ public:
         // get snake head position
         int snakeX = get<0>(snake[0]);
         int snakeY = get<1>(snake[0]);
+        // store tail position for growing purposes
+        get<0>(tailLastPosition) = get<0>(snake.back());
+        get<1>(tailLastPosition) = get<1>(snake.back());
 
         // limit snake location inside map borders
         if (snakeX <= 0) {
@@ -239,8 +244,21 @@ public:
             setSnakeMemberPosition(0, snakeX, mapHeight);
         }
 
+        // grow snake if grow is pending
+        if (growPending) {
+            growSnake();
+            growPending = false;
+        }
+
         // place snake members in world
         placeSnakeInWorld();
+    }
+
+    // adds new member to snake / grows its tail
+    void growSnake() {
+        // place new snake member in last position of tail
+        tuple<int, int> newMember = make_tuple(get<0>(tailLastPosition), get<1>(tailLastPosition));
+        snake.push_back(newMember);
     }
 
     void render()

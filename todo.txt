@@ -1,11 +1,14 @@
--refactor snake pos into list of positions (head always first)
-
--snake grows
---track last tile
---bool grow pending
---if pending -> place tail in last tile
-
 -tail follows head
+
+move snake
+    if next == empty
+        nextpos
+        lastpos
+        move all
+            lastpos = i.pos
+            i.pos = nextpos
+    else
+        todo gameover
 
 
 
