@@ -1,3 +1,4 @@
+-snake grows
 -tail follows head
 
 move snake

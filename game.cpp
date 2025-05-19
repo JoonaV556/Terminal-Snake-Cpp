@@ -77,10 +77,12 @@ public:
         vector<tuple<int, int> > freeTiles; // x, y
         for (int y = 1; y <= mapHeight; y++) {
             for (int x = 1; x <= mapWidth; x++) {
-                for (tuple<int, int> member: snake) {
+                for (tuple member: snake) {
+                    // snake in tile?
                     if (y != get<1>(member) && x != get<0>(member)) {
                         break;
                     }
+                    // tile is free :)
                     freeTiles.push_back(make_tuple(x, y));
                 }
             }
@@ -100,9 +102,10 @@ public:
         // populate world with borders and empty spaces
         refreshWorld();
 
-        // place player at map center at start
+        // place snake at map center
         setSnakeMemberPosition(0, (mapWidth + 2) / 2, (mapHeight + 2) / 2);
         placeSnakeInWorld();
+        snakeDir = none;
 
         // place score point
         placeScoreInRandomEmptyPosition();
