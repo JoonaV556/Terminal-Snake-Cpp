@@ -1,25 +1,8 @@
--snake grows
--tail follows head
+-game over - show score & wait for user input
+-prevent snake from turning 180 degrees
+-cleanup
+    -delete unused snake movement code
 
-move snake
-    if next == empty
-        nextpos
-        lastpos
-        move all
-            lastpos = i.pos
-            i.pos = nextpos
-    else
-        todo gameover
-
-
-
-
-
-features
--game over - wait for user input and start all over again
-
-nice to have
-- prevent snake from turning 180 degrees
 
 # # # # # # # # # #
 #                 #

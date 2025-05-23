@@ -3,6 +3,7 @@
 #include <vector>
 #include <tuple>
 #include <cstdlib>
+#include <deque>
 #include <winuser.h>
 
 using namespace std;
@@ -25,13 +26,15 @@ public:
 
     // snake properties
     char snakeVisual = 'o';
+    int snakeLength = 0;
     MoveDirection snakeDir = none;
+    deque<tuple<int, int> > headPositionHistory = deque<tuple<int, int> >();
+    const int maxHeadPositionHistoryLength = 999;
     vector<tuple<int, int> > snake =
     {
         make_tuple(0, 0), // init head
     };
     tuple<int, int> tailLastPosition = make_tuple(0, 0);
-    bool growPending = false;
 
     // score properties
     tuple<int, int> scorePosition = make_tuple(0, 0);
@@ -103,6 +106,7 @@ public:
         refreshWorld();
 
         // place snake at map center
+        snakeLength = 0;
         setSnakeMemberPosition(0, (mapWidth + 2) / 2, (mapHeight + 2) / 2);
         placeSnakeInWorld();
         snakeDir = none;
@@ -188,10 +192,9 @@ public:
 
     void consumeScore() {
         score++;
+        snakeLength++;
         // spawn new score point / place score in another tile
         placeScoreInRandomEmptyPosition();
-        // grow next update
-        growPending = true;
     }
 
     void updateSnake() {
@@ -220,6 +223,9 @@ public:
         // check next position
         int nextX = get<0>(snake[0]) + xChange;
         int nextY = get<1>(snake[0]) + yChange;
+        // store previous position for tail growth
+        int xBeforeMove = get<0>(snake[0]);
+        int yBeforeMove = get<1>(snake[0]);
         char nextTile = world[nextY][nextX];
         // hit wall or snake
         if (nextTile == mapBorderVisual || nextTile == snakeVisual) {
@@ -232,26 +238,36 @@ public:
         }
 
         // move snake
-        int lastX = nextX;
-        int lastY = nextY;
-        for (int i = 0; i < snake.size(); i++) {
-            if (i == 0) {
-                // first member
-                lastX = get<0>(snake[i]);
-                lastY = get<1>(snake[i]);
-                setSnakeMemberPosition(i, nextX, nextY);
-                continue;
-            }
-            nextX = lastX;
-            nextY = lastY;
-            lastX = get<0>(snake[i]);
-            lastY = get<1>(snake[i]);
-            // other members
-            setSnakeMemberPosition(i, nextX, nextY);
+        // update head position
+        setSnakeMemberPosition(0, nextX, nextY);
+        world[get<1>(snake[0])][get<0>(snake[0])] = snakeVisual;
+
+        // update position history for growth purposes
+        tuple<int, int> headPositionPreMove = make_tuple(xBeforeMove, yBeforeMove);
+        headPositionHistory.push_front(headPositionPreMove);
+        // keep history size under control
+        if (headPositionHistory.size() > maxHeadPositionHistoryLength) {
+            headPositionHistory.pop_back();
         }
 
+        // update tail member positions
+        for (int i = 0; i < snakeLength; i++) {
+            tuple<int, int> memberPos = headPositionHistory[i];
+            // check if snake has eaten itself
+            if (get<0>(memberPos) == get<0>(snake[0]) && get<1>(memberPos) == get<1>(snake[0])) {
+                // game over
+                restartGame();
+                return;
+            }
+            // place member
+            world[get<1>(memberPos)][get<0>(memberPos)] = snakeVisual;
+        }
+
+
         // store tail position for growing purposes
-        get<0>(tailLastPosition) = get<0>(snake.back());
+        get<0>(tailLastPosition)
+                =
+                get<0>(snake.back());
         get<1>(tailLastPosition) = get<1>(snake.back());
 
         // place snake parts in world grid
