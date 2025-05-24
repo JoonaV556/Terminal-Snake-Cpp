@@ -40,6 +40,7 @@ public:
     tuple<int, int> scorePosition = make_tuple(0, 0);
     char scoreVisual = '*';
     int score = 0;
+    int highScore = 0;
 
     // how fast the game runs / how many updates per second
     float gameUpdatesPerSecond = 2;
@@ -97,6 +98,8 @@ public:
     }
 
     void init() {
+        system("cls");
+
         // initialize world with defined size
         world = vector(
             mapHeight + 2, // add 2 extra for borders
@@ -141,7 +144,18 @@ public:
         }
     }
 
-    void restartGame() {
+    void gameOverReset() {
+        cout << "Game Over! Suckass..." << endl;
+        cout << "Score: " << score << endl;
+        // update hi score
+        if (score > highScore) {
+            highScore = score;
+            cout << "New high score! " << highScore << endl;
+        }
+        cout << " " << endl;
+        cout << "Enter anything to continue...";
+        string poo;
+        cin >> poo;
         score = 0;
         init();
     }
@@ -229,7 +243,7 @@ public:
         char nextTile = world[nextY][nextX];
         // hit wall or snake
         if (nextTile == mapBorderVisual || nextTile == snakeVisual) {
-            restartGame();
+            gameOverReset();
             return;
         }
         // hit score
@@ -256,7 +270,7 @@ public:
             // check if snake has eaten itself
             if (get<0>(memberPos) == get<0>(snake[0]) && get<1>(memberPos) == get<1>(snake[0])) {
                 // game over
-                restartGame();
+                gameOverReset();
                 return;
             }
             // place member
@@ -315,6 +329,7 @@ public:
         }
         // render score
         cout << "Score: " << score << endl;
+        cout << "Hi-Score: " << highScore << endl;
         // ESC to quit message
         cout << "Press ESC to quit" << endl;
     }
