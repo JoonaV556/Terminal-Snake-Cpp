@@ -191,16 +191,24 @@ public:
     void updateMoveDirection() {
         // if GetAsyncKeyState(VK_EXAMPLE_KEY) & 0x8000 == true - means EXAMPLE_KEY is currently pressed down
         if (GetAsyncKeyState(VK_LEFT) & 0x8000) {
-            snakeDir = MoveDirection::left;
+            if (snakeDir != MoveDirection::right) {
+                snakeDir = MoveDirection::left;
+            }
         }
         if (GetAsyncKeyState(VK_RIGHT) & 0x8000) {
-            snakeDir = MoveDirection::right;
+            if (snakeDir != MoveDirection::left) {
+                snakeDir = MoveDirection::right;
+            }
         }
         if (GetAsyncKeyState(VK_UP) & 0x8000) {
-            snakeDir = MoveDirection::up;
+            if (snakeDir != MoveDirection::down) {
+                snakeDir = MoveDirection::up;
+            }
         }
         if (GetAsyncKeyState(VK_DOWN) & 0x8000) {
-            snakeDir = MoveDirection::down;
+            if (snakeDir != MoveDirection::up) {
+                snakeDir = MoveDirection::down;
+            }
         }
     }
 

@@ -1,10 +1,7 @@
--game over - show score & wait for user input
--high score
-    x track score across games
-    x update high score during game over
-    x print hi score during gameplay
-    x print high score on game over
--prevent snake from turning 180 degrees
+-prevent score from spawning below snake
+    check & clean existing methods
+    implement new method
+
 -cleanup
     -delete unused snake movement code
     -clean existing code
@@ -15,8 +12,8 @@
 #                 #
 #                 #
 #                 #
+#       o o       #
 #         o       #
-#                 #
-#                 #
+#         o       #
 #                 #
 # # # # # # # # # #
