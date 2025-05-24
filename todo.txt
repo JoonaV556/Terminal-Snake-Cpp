@@ -1,7 +1,3 @@
--prevent score from spawning below snake
-    check & clean existing methods
-    implement new method
-
 -cleanup
     -delete unused snake movement code
     -clean existing code

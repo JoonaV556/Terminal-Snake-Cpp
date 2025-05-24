@@ -81,12 +81,8 @@ public:
         vector<tuple<int, int> > freeTiles; // x, y
         for (int y = 1; y <= mapHeight; y++) {
             for (int x = 1; x <= mapWidth; x++) {
-                for (tuple member: snake) {
-                    // snake in tile?
-                    if (y != get<1>(member) && x != get<0>(member)) {
-                        break;
-                    }
-                    // tile is free :)
+                // snake in tile
+                if (world[y][x] != snakeVisual) {
                     freeTiles.push_back(make_tuple(x, y));
                 }
             }
@@ -254,10 +250,6 @@ public:
             gameOverReset();
             return;
         }
-        // hit score
-        if (nextTile == scoreVisual) {
-            consumeScore();
-        }
 
         // move snake
         // update head position
@@ -285,22 +277,10 @@ public:
             world[get<1>(memberPos)][get<0>(memberPos)] = snakeVisual;
         }
 
-
-        // store tail position for growing purposes
-        get<0>(tailLastPosition)
-                =
-                get<0>(snake.back());
-        get<1>(tailLastPosition) = get<1>(snake.back());
-
-        // place snake parts in world grid
-        placeSnakeInWorld();
-    }
-
-    // adds new member to snake / grows its tail
-    void growSnake() {
-        // place new snake member in last position of tail
-        tuple<int, int> newMember = make_tuple(get<0>(tailLastPosition), get<1>(tailLastPosition));
-        snake.push_back(newMember);
+        // hit score
+        if (nextTile == scoreVisual) {
+            consumeScore();
+        }
     }
 
     void render() {
