@@ -291,21 +291,12 @@ public:
             rowStr.assign(world[y].begin(), world[y].end());
 
             // add gaps between tiles
-            // todo - \/ \/ fix horrible mess \/ \/
-            string withGaps(rowStr.size() * 2 - 1, '_'); // create new empty string with correct size
-            bool add = false;
-            int oIndex = 0;
-            // populate new string with gaps in between
-            for (int g = 0; g < withGaps.size(); g++) {
-                if (!add) {
-                    add = true;
-                    withGaps[g] = rowStr[oIndex];
-                    oIndex++;
-                    continue;
+            string withGaps;
+            for (size_t i = 0; i < rowStr.size(); i++) {
+                withGaps += rowStr[i];
+                if (i < rowStr.size() - 1) {
+                    withGaps += ' ';
                 }
-                add = false;
-                if (g == withGaps.size() - 1) { break; }
-                withGaps[g] = ' ';
             }
 
             // print row
